@@ -52,6 +52,7 @@ const onDragEnd = (
 /**
  * Deleting the Selected Task
  * */
+
 const onDelete = (
   Pickedindex: number,
   data: Columns[],
@@ -91,9 +92,11 @@ const onComplete = (
 
 const Tasks: FC = () => {
   const MySwal = withReactContent(Swal);
-
   const [columns, setColumns] = useState<Columns[]>([...columsData]);
   const [taskText, setTaskText] = useState<string>("");
+
+
+
   return (
 
     <div className="container">
