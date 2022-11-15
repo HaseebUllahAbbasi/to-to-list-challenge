@@ -4,7 +4,7 @@ import Tasks from './components/Tasks';
 
 function App() {
   return (
-    <div>
+    <div className='mt-1'>
       <Tasks />
     </div>
   );

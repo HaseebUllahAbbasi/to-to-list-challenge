@@ -1,6 +1,6 @@
 export type TaskItem = {
   id: string;
-  desc: string;
+  text: string;
 };
 export type Columns = {
   id: string;
