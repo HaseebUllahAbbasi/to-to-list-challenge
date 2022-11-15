@@ -78,76 +78,80 @@ const onComplete = (
 };
 
 const Tasks: FC = () => {
-  const MySwal = withReactContent(Swal)
+  const MySwal = withReactContent(Swal);
 
   const [columns, setColumns] = useState<Columns[]>([...columsData]);
   const [taskText, setTaskText] = useState<string>("");
   return (
 
     <div className="container">
-      <div className="text-center display-6 my-2">
+      <div className="text-center display-2 my-2 mb-4" style={{ color: "white", fontWeight: "bolder" }}>
         To Do List Challenge
       </div>
-      <div className="row">
-        <div className="flex-">
+      <div className="container row">
+        <div className="col-md-6 col-xs-12 mb-3">
           <input
             className="form-control"
-            style={{ width: "500px" }}
+            // style={{ width: "" }}
+
             value={taskText}
-            placeholder={"Task"}
+            placeholder={"Search"}
             onChange={(e) => setTaskText(e.target.value)}
           />
 
         </div>
-
-        <button
-          className="btn btn-dark"
-          onClick={() => {
-            MySwal.fire(
-              {
-                title: 'Enter Task 🔆',
-                input: 'text',
-                inputAttributes:
+        <div className="col-md-6 col-xs-12 text-center">
+          <button
+            className="btn btn-dark"
+            style={{ backgroundColor: "yellow", color: "black" }}
+            onClick={() => {
+              MySwal.fire(
                 {
+                  title: 'Enter Task 🔆',
+                  input: 'text',
+                  inputAttributes:
+                  {
 
-                  autocapitalize: 'off'
-                },
-                showCancelButton: true,
-                confirmButtonText: 'Add',
-                showLoaderOnConfirm: true,
-                allowOutsideClick: () => !Swal.isLoading()
-              }
-            )
-              .then((result) => {
-                if (result.value === "") {
-                  Swal.fire({
-                    title: `Task was not added`,
-                    text: "Please Enter the task again",
-                  })
-                  return;
+                    autocapitalize: 'off'
+                  },
+                  showCancelButton: true,
+                  confirmButtonText: 'Add',
+                  showLoaderOnConfirm: true,
+                  allowOutsideClick: () => !Swal.isLoading()
                 }
-                if (result.isConfirmed) {
-                  const data = [...columns];
-                  const newTask: TaskItem = {
-
-                    id: uuidv4(),
-                    text: result.value
+              )
+                .then((result) => {
+                  if (result.value === "") {
+                    Swal.fire({
+                      title: `Task was not added`,
+                      text: "Please Enter the task again",
+                    })
+                    return;
                   }
-                  data[0].items.splice(0, 0, newTask);
-                  setColumns([...data]);
+                  if (result.isConfirmed) {
+                    const data = [...columns];
+                    const newTask: TaskItem = {
 
-                  Swal.fire({
-                    title: `Task Added`,
-                    text: (result.value),
-                  })
-                }
-              })
-          }}
-        >
-          <span role="img" aria-label="add">
-            ➕
-          </span>
-        </button>
+                      id: uuidv4(),
+                      text: result.value
+                    }
+                    data[0].items.splice(0, 0, newTask);
+                    setColumns([...data]);
+
+                    Swal.fire({
+                      title: `Task Added`,
+                      text: (result.value),
+                    })
+                  }
+                })
+            }}
+          >
+            Lets Add Task &nbsp;
+            <span role="img" aria-label="add">
+              ➕
+            </span>
+          </button>
+        </div>
       </div>
 
       <DragDropContext
@@ -157,7 +161,7 @@ const Tasks: FC = () => {
           {columns.map((colItem, ColIndex) => (
             <div className="my-2" key={ColIndex}>
               <div>
-                <h2 className="text-center">{colItem.name}</h2>
+                <h2 className="text-center" style={{ color: "white" }}>{colItem.name}</h2>
                 <Droppable droppableId={colItem.id} key={colItem.id}>
                   {(provided, snapshot) => {
                     return (
@@ -166,14 +170,16 @@ const Tasks: FC = () => {
                         ref={provided.innerRef}
                         style={{
                           background: snapshot.isDraggingOver
-                            ? "lightblue"
-                            : "#72195A",
+                            ? "#FFAE03"
+                            : "lightyellow",
                           padding: "15px",
                           borderRadius: "10px",
-                          width: "400px",
+                          maxWidth: "400px",
+                          minWidth: "250px",
                           minHeight: "250px"
                         }}
                       >
+
                         {colItem.items.map((item, index) => {
                           return (
                             <Draggable
@@ -183,7 +189,9 @@ const Tasks: FC = () => {
                             >
                               {(provided, snapshot) => {
                                 return (
+
                                   <div
+                                    hidden={!item.text.includes(taskText)}
                                     className="card mx-2 mb-3 mt-2"
                                     ref={provided.innerRef}
                                     {...provided.draggableProps}
@@ -195,35 +203,53 @@ const Tasks: FC = () => {
                                       borderRadius: "10px",
                                       margin: "0 0 8px 0",
                                       minHeight: "50px",
-                                      minWidth: "200px",
+                                      minWidth: "120px",
+
 
                                       backgroundColor: snapshot.isDragging
-                                        ? "lightyellow"
-                                        : "white",
+                                        ? "#F5E0B7"
+                                        : "#E8EDDF",
                                       color: "black",
                                       ...provided.draggableProps.style
                                     }}
                                   >
                                     <div
                                       className="card-body display-6 text-center"
-                                      style={{ padding: 10, minHeight: "110px", fontSize: "2rem" }}
-
+                                      style={{ padding: 10, minHeight: "110px", fontSize: "2rem", }}
                                     >
-
-                                      {item.text}
+                                      {item.text
+                                      }
                                     </div>
                                     <div className="card-footer d-flex  justify-content-around   flex-wrap">
                                       <button
                                         title="Delete"
                                         className="btn d-block btn-danger"
                                         onClick={() => {
-                                          onDelete(
-                                            index,
-                                            columns,
-                                            setColumns,
-                                            colItem.name,
-                                            ColIndex
-                                          );
+                                          Swal.fire({
+                                            title: 'Are you sure?',
+                                            text: "do you  want to delete !",
+                                            icon: 'warning',
+                                            showCancelButton: true,
+                                            confirmButtonColor: '#d33',
+                                            cancelButtonColor: '#3085d6 ',
+                                            confirmButtonText: 'Yes, delete it!'
+                                          }).then((result) => {
+                                            if (result.isConfirmed) {
+
+                                              onDelete(
+                                                index,
+                                                columns,
+                                                setColumns,
+                                                colItem.name,
+                                                ColIndex
+                                              );
+                                              Swal.fire(
+                                                'Deleted!',
+                                                'Task Deleted',
+                                                'success'
+                                              )
+                                            }
+                                          })
                                         }}
                                       >
                                         <span role="img" aria-label="Remove">
@@ -287,6 +313,7 @@ const Tasks: FC = () => {
                                       </button>
                                     </div>
                                   </div>
+
                                 );
                               }}
                             </Draggable>
@@ -304,6 +331,7 @@ const Tasks: FC = () => {
           ))}
         </div>
       </DragDropContext>
+
     </div>
   )
 }

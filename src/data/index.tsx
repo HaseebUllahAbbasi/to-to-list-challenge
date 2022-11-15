@@ -23,3 +23,4 @@ export const columsData: Columns[] = [
   { id: uuidv4(), name: "To Do", items: ToDo },
   { id: uuidv4(), name: "Completed", items: [] }
 ];
+// rgb(163 161 163) #a3a1a3
