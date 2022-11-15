@@ -9,8 +9,9 @@ soon, I will be adding doc
 - User will be able to create, modify and delete an item from to-do list.
 - To-do items must be searchable.
 
-## Bonus
+## Bonus • The UI showing a paginated to-do list
 
-- The UI showing a paginated to-do list
 - Move To-do items up or down in priority.•
 - Drag and drop for changing priority.
+
+## <https://almond-scallop-a62.notion.site/To-Do-Task-DOCS-2e50dd2a86224bad9169ff55c69268c4> FOR DOCS
