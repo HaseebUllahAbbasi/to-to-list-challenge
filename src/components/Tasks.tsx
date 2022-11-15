@@ -5,6 +5,11 @@ import { v4 as uuidv4 } from "uuid";
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 import { DragDropContext, Droppable, Draggable, DropResult } from "react-beautiful-dnd";
+
+/**
+ *  Handling the Dragging Event and checking valid point to be dragged
+ *   then Changing Data Accordingly
+ * **/
 const onDragEnd = (
   result: DropResult,
   data: Columns[],
@@ -44,6 +49,9 @@ const onDragEnd = (
   }
 
 };
+/**
+ * Deleting the Selected Task
+ * */
 const onDelete = (
   Pickedindex: number,
   data: Columns[],
@@ -58,6 +66,10 @@ const onDelete = (
   setColumns([...data]);
 };
 
+/**
+ * Completing the Task  if not  Completed
+ * 
+ * */
 const onComplete = (
   Pickedindex: number,
   data: { items: any[] }[],
@@ -128,10 +140,10 @@ const Tasks: FC = () => {
                     })
                     return;
                   }
+
                   if (result.isConfirmed) {
                     const data = [...columns];
                     const newTask: TaskItem = {
-
                       id: uuidv4(),
                       text: result.value
                     }
@@ -296,21 +308,25 @@ const Tasks: FC = () => {
                                           📝
                                         </span>
                                       </button>
-                                      <button
-                                        className="btn btn-success"
-                                        title="Complete"
-                                        onClick={() => {
-                                          onComplete(
-                                            index,
-                                            columns,
-                                            setColumns,
-                                            colItem.name,
-                                            ColIndex
-                                          );
-                                        }}
-                                      >
-                                        ✔
-                                      </button>
+                                      {
+                                        colItem.name !== "Completed" &&
+                                        <button
+                                          className="btn btn-success"
+                                          title="Complete"
+                                          onClick={() => {
+                                            onComplete(
+                                              index,
+                                              columns,
+                                              setColumns,
+                                              colItem.name,
+                                              ColIndex
+                                            );
+                                          }}
+                                        >
+                                          ✔
+                                        </button>
+
+                                      }
                                     </div>
                                   </div>
 
