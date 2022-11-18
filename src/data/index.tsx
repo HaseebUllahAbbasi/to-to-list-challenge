@@ -6,21 +6,28 @@ const ToDo: TaskItem[] = [
     id: uuidv4(),
     text:
       "Apply OAuth with GitHub and Google"
+    ,
+    completed: false,
   },
 
   {
     id: uuidv4(),
     text:
-      "Help Teammate to remove CORS error from Backend"
+      "Help Teammate to remove CORS error from Backend",
+    completed: false,
+
   },
   {
     id: uuidv4(),
     text:
-      "Improve  Icons quality on the Footer Component"
+      "Improve  Icons quality on the Footer Component",
+    completed: false,
+
   },
 ];
 export const columsData: Columns[] = [
   { id: uuidv4(), name: "To Do", items: ToDo },
-  { id: uuidv4(), name: "Completed", items: [] }
 ];
-// rgb(163 161 163) #a3a1a3
+
+//  rgb(163 161 163) #a3a1a3
+

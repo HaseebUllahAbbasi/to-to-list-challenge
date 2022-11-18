@@ -29,7 +29,7 @@ const onDelete = (
  * */
 const onComplete = (
   Pickedindex: number,
-  data: { items: any[] }[],
+  data: Columns[],
   setColumns: {
     (value: React.SetStateAction<Columns[]>): void;
     (arg0: any[]): void;
@@ -41,8 +41,10 @@ const onComplete = (
     alert("Already Completed ");
     return;
   }
-  const NewItem = data[ColIndex].items.splice(Pickedindex, 1);
-  data[1].items.splice(0, 0, NewItem[0]);
+
+
+  // const NewItem = data[ColIndex].items.splice(Pickedindex, 1);
+  // data[1].items.splice(0, 0, NewItem[0]);
   setColumns([...data]);
 };
 
@@ -65,7 +67,6 @@ type TaskProps = {
 const Task: FC<TaskProps> = ({ item, searchText, provided, snapshot, index, setColumns, columns, colItem, ColIndex }) => {
 
   return (
-
     <div
       hidden={!item.text.includes(searchText)}
       className="card mx-2 mb-3 mt-2"

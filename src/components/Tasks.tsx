@@ -22,39 +22,21 @@ const onDragEnd = (
 
   if (!result.destination) return;
   const { source, destination } = result;
-  if (source.droppableId !== destination.droppableId) {
-    const sourceId = source.droppableId;
-    const destinationId = destination.droppableId;
-    const Pickedindex = source.index;
-    const DroppedIndex = destination.index;
-    const SourceIndex = data.findIndex(
-      (item: { id: any }) => item.id === sourceId
-    );
-    const DestIndex = data.findIndex(
-      (item: { id: any }) => item.id === destinationId
-    );
-    const NewItem = data[SourceIndex].items.splice(Pickedindex, 1);
-    data[DestIndex].items.splice(DroppedIndex, 0, NewItem[0]);
-    setColumns([...data]);
-  }
-  else {
-    const colId = source.droppableId;
-    const Pickedindex = source.index;
-    const SourceIndex = data.findIndex(
-      (item: { id: any }) => item.id === colId
-    );
-    const removed = data[SourceIndex].items.splice(Pickedindex, 1);
-    data[SourceIndex].items.splice(destination.index, 0, removed[0]);
-    setColumns([...data])
+  const colId = source.droppableId;
+  const Pickedindex = source.index;
+  const SourceIndex = data.findIndex(
+    (item: { id: any }) => item.id === colId
+  );
+  const removed = data[SourceIndex].items.splice(Pickedindex, 1);
+  data[SourceIndex].items.splice(destination.index, 0, removed[0]);
+  setColumns([...data])
 
-  }
+
 
 };
 /**
  * Deleting the Selected Task
  * */
-
-
 
 const Tasks: FC = () => {
   const MySwal = withReactContent(Swal);
@@ -114,7 +96,9 @@ const Tasks: FC = () => {
                     const data = [...columns];
                     const newTask: TaskItem = {
                       id: uuidv4(),
-                      text: result.value
+                      text: result.value,
+                      completed: false,
+
                     }
                     data[0].items.splice(0, 0, newTask);
                     setColumns([...data]);
