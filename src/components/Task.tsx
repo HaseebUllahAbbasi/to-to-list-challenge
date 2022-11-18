@@ -2,7 +2,7 @@ import React, { FC } from "react"
 import { DraggableProvided, DraggableStateSnapshot } from "react-beautiful-dnd"
 import Swal from 'sweetalert2'
 
-import { TaskItem, Columns } from "../types"
+import { TaskItem, ToDo } from "../types"
 
 
 /**
@@ -11,16 +11,14 @@ import { TaskItem, Columns } from "../types"
 
 const onDelete = (
   Pickedindex: number,
-  data: Columns[],
-  setColumns: {
-    (value: React.SetStateAction<Columns[]>): void;
+  data: ToDo,
+  setData: {
+    (value: React.SetStateAction<ToDo>): void;
     (arg0: any[]): void;
   },
-  ColName: string,
-  ColIndex: number
 ) => {
-  data[ColIndex].items.splice(Pickedindex, 1);
-  setColumns([...data]);
+  data.items.splice(Pickedindex, 1);
+  setData({ ...data });
 };
 
 /**
@@ -29,42 +27,37 @@ const onDelete = (
  * */
 const onComplete = (
   Pickedindex: number,
-  data: Columns[],
-  setColumns: {
-    (value: React.SetStateAction<Columns[]>): void;
+  data: ToDo,
+  setData: {
+    (value: React.SetStateAction<ToDo>): void;
     (arg0: any[]): void;
   },
-  ColName: string,
-  ColIndex: number
+  completed: boolean
 ) => {
-  if (ColName === "Completed") {
-    alert("Already Completed ");
-    return;
-  }
 
-
-  // const NewItem = data[ColIndex].items.splice(Pickedindex, 1);
-  // data[1].items.splice(0, 0, NewItem[0]);
-  setColumns([...data]);
+  if (completed)
+    data.items[Pickedindex].completed = false;
+  else
+    data.items[Pickedindex].completed = true;
+  setData({ ...data });
 };
 
 
 type TaskProps = {
-  item: TaskItem,
+  ToDoItemData: TaskItem,
   searchText: string,
   provided: DraggableProvided,
   snapshot: DraggableStateSnapshot,
   index: number,
-  columns: Columns[],
-  setColumns: {
-    (value: React.SetStateAction<Columns[]>): void;
-    (arg0: any[]): void;
+  data: ToDo,
+  setData: {
+    (value: React.SetStateAction<ToDo>): void;
+    (arg0: any): void;
   }
-  colItem: Columns,
-  ColIndex: number,
+
 }
 
-const Task: FC<TaskProps> = ({ item, searchText, provided, snapshot, index, setColumns, columns, colItem, ColIndex }) => {
+const Task: FC<TaskProps> = ({ ToDoItemData: item, searchText, provided, snapshot, index, setData, data: columns }) => {
 
   return (
     <div
@@ -85,7 +78,7 @@ const Task: FC<TaskProps> = ({ item, searchText, provided, snapshot, index, setC
 
         backgroundColor: snapshot.isDragging
           ? "#F5E0B7"
-          : "#E8EDDF",
+          : item.completed === true ? "#E5D4CE" : "#E8EDDF",
         color: "black",
         ...provided.draggableProps.style
       }}
@@ -116,9 +109,7 @@ const Task: FC<TaskProps> = ({ item, searchText, provided, snapshot, index, setC
                 onDelete(
                   index,
                   columns,
-                  setColumns,
-                  colItem.name,
-                  ColIndex
+                  setData,
                 );
                 Swal.fire(
                   'Deleted!',
@@ -155,9 +146,9 @@ const Task: FC<TaskProps> = ({ item, searchText, provided, snapshot, index, setC
             )
               .then((result) => {
                 if (result.isConfirmed) {
-                  const data = [...columns];
-                  data[ColIndex].items[index].text = result.value;
-                  setColumns([...data]);
+                  const newData = columns;
+                  newData.items[index].text = result.value;
+                  setData({ ...newData });
                   Swal.fire({
                     title: `Task Modified`,
                     text: (result.value),
@@ -174,26 +165,80 @@ const Task: FC<TaskProps> = ({ item, searchText, provided, snapshot, index, setC
           </span>
         </button>
         {
-          colItem.name !== "Completed" &&
-          <button
-            className="btn btn-success"
-            title="Complete"
-            onClick={() => {
-              onComplete(
-                index,
-                columns,
-                setColumns,
-                colItem.name,
-                ColIndex
-              );
-            }}
-          >
-            ✔
-          </button>
+          item.completed === false ?
+            <button
+              className="btn btn-success"
+              title="Complete"
+              onClick={() => {
+
+                Swal.fire({
+                  title: 'Are you sure?',
+                  text: item.completed === true ? "do you  want to Add To Task Again !" : "do you  want to Complete !",
+                  icon: 'warning',
+                  showCancelButton: true,
+                  confirmButtonColor: 'green',
+                  cancelButtonColor: '#3085d6 ',
+                  confirmButtonText: 'Yes, Complete it!'
+                }).then((result) => {
+                  if (result.isConfirmed) {
+
+                    onComplete(
+                      index,
+                      columns,
+                      setData,
+                      item.completed,
+                    );
+                    Swal.fire(
+                      'Completed',
+                      'Task Completed',
+                      'success'
+                    )
+                  }
+                })
+              }}
+            >
+              ✔
+            </button> :
+            <button
+              className="btn btn-dark"
+              title="Add To Task Again"
+              onClick={() => {
+                Swal.fire({
+                  title: 'Are you sure?',
+                  text: item.completed === true ? "do you  want to Add To Task Again !" : "do you  want to Complete !",
+                  icon: 'warning',
+                  showCancelButton: true,
+                  confirmButtonColor: 'black',
+                  cancelButtonColor: '#3085d6 ',
+                  confirmButtonText: 'Yes, Complete it!'
+                }).then((result) => {
+                  if (result.isConfirmed) {
+
+                    onComplete(
+                      index,
+                      columns,
+                      setData,
+                      item.completed,
+                    );
+                    Swal.fire(
+                      'Completed',
+                      'Task Completed',
+                      'success'
+                    )
+                  }
+                })
+
+              }}
+            >
+
+              <span role="img" aria-label="Add Again">
+                ➕
+              </span>
+            </button>
 
         }
       </div>
-    </div>
+    </div >
 
 
 

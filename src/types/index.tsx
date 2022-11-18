@@ -4,7 +4,7 @@ export type TaskItem = {
   completed: boolean,
 
 };
-export type Columns = {
+export type ToDo = {
   id: string;
   name: string;
   items: TaskItem[];

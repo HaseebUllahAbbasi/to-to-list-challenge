@@ -1,6 +1,6 @@
 import React, { FC, useState } from "react";
 import { columsData } from "../data";
-import { Columns, TaskItem } from '../types/index'
+import { TaskItem, ToDo } from '../types/index'
 import { v4 as uuidv4 } from "uuid";
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
@@ -9,38 +9,34 @@ import Task from "./Task";
 
 /**
  *  Handling the Dragging Event and checking valid point to be dragged
- *   then Changing Data Accordingly
+ *  then Changing Data Accordingly
  * **/
 const onDragEnd = (
   result: DropResult,
-  data: Columns[],
-  setColumns: {
-    (value: React.SetStateAction<Columns[]>): void;
-    (arg0: any[]): void;
+  data: ToDo,
+  setData: {
+    (value: React.SetStateAction<ToDo>): void;
+    (arg0: any): void;
   }
 ) => {
 
   if (!result.destination) return;
   const { source, destination } = result;
-  const colId = source.droppableId;
+
   const Pickedindex = source.index;
-  const SourceIndex = data.findIndex(
-    (item: { id: any }) => item.id === colId
-  );
-  const removed = data[SourceIndex].items.splice(Pickedindex, 1);
-  data[SourceIndex].items.splice(destination.index, 0, removed[0]);
-  setColumns([...data])
-
-
-
+  const removed = data.items.splice(Pickedindex, 1);
+  data.items.splice(destination.index, 0, removed[0]);
+  setData({ ...data })
 };
 /**
  * Deleting the Selected Task
  * */
 
+
+
 const Tasks: FC = () => {
   const MySwal = withReactContent(Swal);
-  const [columns, setColumns] = useState<Columns[]>([...columsData]);
+  const [data, setData] = useState<ToDo>({ ...columsData });
   const [searchText, setTaskText] = useState<string>("");
 
 
@@ -55,7 +51,6 @@ const Tasks: FC = () => {
         <div className="col-md-6 col-xs-12 mb-3">
           <input
             className="form-control"
-            // style={{ width: "" }}
 
             value={searchText}
             placeholder={"Search"}
@@ -93,15 +88,15 @@ const Tasks: FC = () => {
                   }
 
                   if (result.isConfirmed) {
-                    const data = [...columns];
+                    const newData = { ...data };
                     const newTask: TaskItem = {
                       id: uuidv4(),
                       text: result.value,
                       completed: false,
 
                     }
-                    data[0].items.splice(0, 0, newTask);
-                    setColumns([...data]);
+                    newData.items.splice(0, 0, newTask);
+                    setData(newData);
 
                     Swal.fire({
                       title: `Task Added`,
@@ -120,58 +115,58 @@ const Tasks: FC = () => {
       </div>
 
       <DragDropContext
-        onDragEnd={(result) => onDragEnd(result, columns, setColumns)}
+        onDragEnd={(result) => onDragEnd(result, data, setData)}
       >
         <div className="d-flex justify-content-around   flex-wrap">
-          {columns.map((colItem, ColIndex) => (
-            <div className="my-2" key={ColIndex}>
-              <div>
-                <h2 className="text-center" style={{ color: "white" }}>{colItem.name}</h2>
-                <Droppable droppableId={colItem.id} key={colItem.id}>
-                  {(provided, snapshot) => {
-                    return (
-                      <div
-                        {...provided.droppableProps}
-                        ref={provided.innerRef}
-                        style={{
-                          background: snapshot.isDraggingOver
-                            ? "#FFAE03"
-                            : "lightyellow",
-                          padding: "15px",
-                          borderRadius: "10px",
-                          maxWidth: "400px",
-                          minWidth: "250px",
-                          minHeight: "250px"
-                        }}
-                      >
+          (
+          <div className="my-2" key={0}>
+            <div>
+              <h2 className="text-center" style={{ color: "white" }}>{data.name}</h2>
+              <Droppable droppableId={data.id} key={data.id}>
+                {(provided, snapshot) => {
+                  return (
+                    <div
+                      {...provided.droppableProps}
+                      ref={provided.innerRef}
+                      style={{
+                        background: snapshot.isDraggingOver
+                          ? "#FFAE03"
+                          : "lightyellow",
+                        padding: "15px",
+                        borderRadius: "10px",
+                        maxWidth: "400px",
+                        minWidth: "250px",
+                        minHeight: "250px"
+                      }}
+                    >
 
-                        {colItem.items.map((item, index) => {
-                          return (
-                            <Draggable
-                              key={item.id}
-                              draggableId={item.id}
-                              index={index}
-                            >
-                              {(provided, snapshot) => {
-                                return (
+                      {data.items.map((item, index) => {
+                        return (
+                          <Draggable
+                            key={item.id}
+                            draggableId={item.id}
+                            index={index}
+                          >
+                            {(provided, snapshot) => {
+                              return (
 
-                                  <Task columns={columns} index={index} provided={provided} snapshot={snapshot} item={item} setColumns={setColumns} searchText={searchText} colItem={colItem} ColIndex={ColIndex} />
+                                <Task data={data} index={index} provided={provided} snapshot={snapshot} ToDoItemData={item} setData={setData} searchText={searchText} />
 
-                                );
-                              }}
-                            </Draggable>
-                          );
-                        })}
-                        {provided.placeholder}
-                      </div>
-                    );
-                  }}
-                </Droppable>
+                              );
+                            }}
+                          </Draggable>
+                        );
+                      })}
+                      {provided.placeholder}
+                    </div>
+                  );
+                }}
+              </Droppable>
 
-              </div>
             </div>
+          </div>
 
-          ))}
+          )
         </div>
       </DragDropContext>
 

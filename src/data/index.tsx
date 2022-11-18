@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from "uuid";
-import { Columns, TaskItem } from '../types/index'
+import { ToDo, TaskItem } from '../types/index'
 
-const ToDo: TaskItem[] = [
+const ToDoData: TaskItem[] = [
   {
     id: uuidv4(),
     text:
@@ -24,10 +24,15 @@ const ToDo: TaskItem[] = [
     completed: false,
 
   },
-];
-export const columsData: Columns[] = [
-  { id: uuidv4(), name: "To Do", items: ToDo },
-];
+  {
+    id: uuidv4(),
+    text:
+      "Create Issue on the Form handling from front End",
+    completed: false,
 
-//  rgb(163 161 163) #a3a1a3
+  },
+
+];
+export const columsData: ToDo =
+  { id: uuidv4(), name: "To Do", items: ToDoData };
 
